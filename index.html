@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Posyandu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#0f4c45;--forest2:#176b61;--sun:#ffc93c;--mint:#eef7f1;--ink:#12302c;--muted:#52706a;--line:#d5e6dc}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--mint);line-height:1.6}
+h1,h2,h3,.brand,.big{font-family:'Baloo 2',system-ui,sans-serif;line-height:1.15;margin:0}
+.wrap{max-width:1040px;margin:auto;padding:0 20px}
+
+/* Bagian atas */
+.hero{background:var(--forest);color:#fff;position:relative;overflow:hidden;padding:24px 0 84px}
+.hero::before{content:"";position:absolute;right:-90px;top:-110px;width:340px;height:340px;border-radius:50%;background:var(--forest2)}
+.hero .wrap{position:relative}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem}
+.brand i{width:34px;height:34px;border-radius:10px;background:var(--sun);color:var(--forest);display:grid;place-items:center;font-style:normal;font-size:1.4rem}
+.hero-grid{display:grid;gap:32px;margin-top:40px;align-items:center}
+@media(min-width:820px){.hero-grid{grid-template-columns:1.15fr .85fr}}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);font-weight:800}
+.lead{color:#cfe8df;max-width:46ch;margin:16px 0 26px;font-size:1.05rem}
+.btn{display:inline-block;background:var(--sun);color:var(--forest);font:700 1rem Nunito,sans-serif;padding:13px 24px;border-radius:999px;text-decoration:none;border:0;cursor:pointer}
+.btn.dark{background:var(--forest);color:#fff}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* Kartu jadwal terdekat: elemen paling menonjol */
+.next{background:var(--sun);color:var(--forest);border-radius:28px;padding:26px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+.next .lbl{margin:0;font-weight:700}
+.next .tgl{display:flex;align-items:baseline;gap:12px;margin:2px 0 4px}
+.next .hari{font-size:5.2rem;font-weight:800;line-height:1}
+.next .bln{font-size:1.6rem;font-weight:800}
+.next .keg{font-size:1.4rem;font-weight:800;margin:0}
+.next .info{margin:2px 0 0}
+
+/* Isi */
+main{margin-top:-44px;position:relative}
+.panel{background:#fff;border-radius:24px;padding:24px;margin-bottom:24px;box-shadow:0 8px 30px rgba(15,76,69,.08)}
+h2{font-size:1.6rem;color:var(--forest)}
+.sub{color:var(--muted);margin:2px 0 18px}
+.jadwal{display:grid;gap:12px}
+@media(min-width:700px){.jadwal{grid-template-columns:1fr 1fr}}
+.item{display:flex;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:18px}
+.item.next-i{border:2px solid var(--forest);background:#f3fbf6}
+.badge{flex:none;width:62px;text-align:center;background:var(--forest);color:#fff;border-radius:14px;padding:8px 0}
+.badge b{display:block;font:800 1.6rem/1 'Baloo 2',sans-serif}
+.badge span{font-size:.85rem}
+.item h3{font-size:1.1rem}
+.item p{margin:0;color:var(--muted);font-size:.95rem}
+.tag{display:inline-block;background:var(--sun);color:var(--forest);font:700 .8rem Nunito,sans-serif;padding:1px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+
+.cari{display:flex;gap:10px;flex-wrap:wrap}
+input{flex:1 1 220px;font:600 1.05rem Nunito,sans-serif;padding:13px 16px;border:2px solid var(--line);border-radius:14px;color:var(--ink);background:#fff}
+input:focus-visible{border-color:var(--forest)}
+#hasil{margin-top:18px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.stat{background:var(--mint);border-radius:18px;padding:16px}
+.stat .big{font-size:2.3rem;font-weight:800;color:var(--forest)}
+.stat small{display:block;color:var(--muted)}
+.riw{display:grid;gap:10px}
+.rrow{border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.rrow .d{font-weight:700;min-width:104px}
+.chip{border-radius:999px;padding:2px 12px;font-size:.88rem;font-weight:700;background:#dff3e8;color:var(--forest)}
+.chip.warn{background:#ffe3da;color:#a73a1b}
+.msg{padding:14px 16px;border-radius:14px;background:var(--mint);color:var(--muted)}
+.msg.err{background:#ffe3da;color:#8f2f14}
+.skel{height:64px;border-radius:18px;background:linear-gradient(90deg,#e4efe8,#f3f9f5,#e4efe8);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.skel{animation:none}}
+footer{padding:4px 0 40px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="brand"><i>+</i> Portal Posyandu</div>
+    <div class="hero-grid">
+      <div>
+        <h1>Jadwal posyandu dan riwayat tumbuh anak, dalam satu tautan</h1>
+        <p class="lead">Lihat kegiatan posyandu terdekat, lalu cek catatan berat dan tinggi badan anak memakai kode dari kader.</p>
+        <a class="btn" href="#riwayat">Lihat riwayat anak</a>
+      </div>
+      <div class="next" id="next"><p class="lbl">Memuat jadwal…</p></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel" id="jadwal-box">
+    <h2>Jadwal kegiatan</h2>
+    <p class="sub">Diperbarui otomatis setiap halaman dibuka.</p>
+    <div class="jadwal" id="jadwal"><div class="skel"></div><div class="skel"></div></div>
+  </section>
+
+  <section class="panel" id="riwayat">
+    <h2>Riwayat anak</h2>
+    <p class="sub">Masukkan kode anak yang diberikan kader posyandu.</p>
+    <div class="cari">
+      <input id="kode" placeholder="Contoh: A001" autocomplete="off" aria-label="Kode anak">
+      <button class="btn dark" id="tombol">Cari riwayat</button>
+    </div>
+    <div id="hasil"></div>
+  </section>
+</main>
+
+<footer class="wrap">Prototipe lomba Krenova. Semua data di halaman ini adalah data contoh, bukan data warga.</footer>
+
+<script>
+// Alamat API dari Apps Script (berakhiran /exec). Ganti jika deployment baru.
+const API = 'https://script.google.com/macros/s/AKfycbwoqBhW51GsvsGLJNS9CZIuypauO8oKay_vikee77hhuMwjwaZLAlLvOs9wfrgsN4tr/exec';
+
+// Singkatan bulan (Indonesia dan Inggris) menjadi nomor bulan
+const BLN = {jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,agt:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
+
+// Mengubah teks "12 Nov 2026" menjadi tanggal; null jika bentuknya tidak dikenal
+function tgl(s) {
+  const p = String(s).trim().split(/\s+/);
+  const b = BLN[(p[1] || '').slice(0, 3).toLowerCase()];
+  if (p.length < 3 || b === undefined) return null;
+  return new Date(+p[2], b, +p[0]);
+}
+
+// Membuat elemen HTML dengan teks aman (textContent, bukan innerHTML)
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+// Memanggil API dan mengembalikan isi "data"
+async function ambil(query) {
+  const res = await fetch(API + query);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error || 'API menolak permintaan');
+  return json.data;
+}
+
+// Menampilkan daftar jadwal dan kartu "jadwal terdekat"
+async function muatJadwal() {
+  const box = document.getElementById('jadwal');
+  const hero = document.getElementById('next');
+  try {
+    const data = await ambil('?aksi=jadwal');
+    box.replaceChildren();
+    if (!data.length) {
+      box.appendChild(el('div', 'msg', 'Belum ada jadwal. Tambahkan baris di sheet Jadwal.'));
+      hero.replaceChildren(el('p', 'lbl', 'Belum ada jadwal'));
+      return;
+    }
+    const hariIni = new Date(); hariIni.setHours(0, 0, 0, 0);
+    const urut = data.map(d => ({ d, t: tgl(d.tanggal) })).sort((a, b) => (a.t || 0) - (b.t || 0));
+    const idx = urut.findIndex(x => x.t && x.t >= hariIni);
+
+    urut.forEach((x, i) => {
+      const p = String(x.d.tanggal).split(/\s+/);
+      const item = el('div', 'item' + (i === idx ? ' next-i' : ''));
+      const badge = el('div', 'badge');
+      badge.append(el('b', '', p[0]), el('span', '', p[1] || ''));
+      const teks = el('div');
+      const judul = el('h3', '', x.d.kegiatan);
+      if (i === idx) judul.appendChild(el('span', 'tag', 'Berikutnya'));
+      teks.append(judul, el('p', '', 'Pukul ' + x.d.jam + ', ' + x.d.lokasi));
+      item.append(badge, teks);
+      box.appendChild(item);
+    });
+
+    const pilih = urut[idx >= 0 ? idx : urut.length - 1].d;
+    const q = String(pilih.tanggal).split(/\s+/);
+    const tanggal = el('div', 'tgl');
+    tanggal.append(el('span', 'hari big', q[0]), el('span', 'bln big', (q[1] || '') + ' ' + (q[2] || '')));
+    hero.replaceChildren(
+      el('p', 'lbl', idx >= 0 ? 'Jadwal terdekat' : 'Kegiatan terakhir'),
+      tanggal,
+      el('p', 'keg big', pilih.kegiatan),
+      el('p', 'info', 'Pukul ' + pilih.jam + ', ' + pilih.lokasi)
+    );
+  } catch (err) {
+    box.replaceChildren(el('div', 'msg err', 'Jadwal belum bisa dimuat (' + err.message + '). Periksa internet lalu muat ulang halaman.'));
+    hero.replaceChildren(el('p', 'lbl', 'Jadwal belum bisa dimuat'));
+  }
+}
+
+// Mencari riwayat anak berdasarkan kode
+async function cari() {
+  const out = document.getElementById('hasil');
+  const kode = document.getElementById('kode').value.trim().toUpperCase();
+  if (!kode) { out.replaceChildren(el('div', 'msg', 'Ketik kode anak dulu, misalnya A001.')); return; }
+  out.replaceChildren(el('div', 'skel'));
+  try {
+    const data = await ambil('?aksi=riwayat&kode=' + encodeURIComponent(kode));
+    if (!data.length) {
+      out.replaceChildren(el('div', 'msg', 'Kode ' + kode + ' tidak ditemukan. Periksa huruf dan angkanya, atau tanyakan ke kader.'));
+      return;
+    }
+    data.sort((a, b) => (tgl(b.tanggal) || 0) - (tgl(a.tanggal) || 0)); // terbaru di atas
+    const t = data[0];
+
+    const stat = el('div', 'stat-row');
+    [['berat_kg', 'Berat badan', 'kg'], ['tinggi_cm', 'Tinggi badan', 'cm']].forEach(([k, label, satuan]) => {
+      const s = el('div', 'stat');
+      s.append(el('div', 'big', t[k] + ' ' + satuan), el('small', '', label + ', ' + t.tanggal));
+      stat.appendChild(s);
+    });
+
+    const daftar = el('div', 'riw');
+    data.forEach(d => {
+      const r = el('div', 'rrow');
+      r.append(el('span', 'd', d.tanggal), el('span', '', d.berat_kg + ' kg, ' + d.tinggi_cm + ' cm'));
+      if (d.imunisasi && d.imunisasi !== '-') r.appendChild(el('span', 'chip', 'Imunisasi ' + d.imunisasi));
+      const perlu = /kontrol|perlu/i.test(d.catatan || '');
+      r.appendChild(el('span', 'chip' + (perlu ? ' warn' : ''), d.catatan || 'Tanpa catatan'));
+      daftar.appendChild(r);
+    });
+    out.replaceChildren(stat, daftar);
+  } catch (err) {
+    out.replaceChildren(el('div', 'msg err', 'Riwayat belum bisa dimuat (' + err.message + '). Periksa internet lalu coba lagi.'));
+  }
+}
+
+document.getElementById('tombol').addEventListener('click', cari);
+document.getElementById('kode').addEventListener('keydown', e => { if (e.key === 'Enter') cari(); });
+muatJadwal();
+</script>
+</body>
+</html>
