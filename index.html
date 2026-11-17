@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Posyandu Digital – Cek Data Anak</title>
+<meta name="description" content="Cek data imunisasi dan tumbuh kembang anak di posyandu secara real-time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#0a3f4d; --teal:#0f9d8a; --mint:#d9f4ee; --coral:#ff7a59; --sun:#ffc857;
+  --ink:#16323a; --muted:#5d7a82; --line:#e3eeee; --bg:#f5fbf9; --card:#ffffff;
+  --ok:#12a150; --ok-bg:#e4f7ec; --warn:#d9480f; --warn-bg:#ffece4; --info:#1971c2; --info-bg:#e6f1fc;
+  --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;color:#fff;padding:22px 0 130px;
+  background:radial-gradient(1200px 500px at 85% -10%,#18b5a0 0%,transparent 60%),
+             radial-gradient(900px 500px at -10% 110%,#116f7a 0%,transparent 60%),
+             linear-gradient(160deg,#0a3f4d,#0b5a63 60%,#0f8c82)}
+.blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.18;animation:float 9s ease-in-out infinite}
+.b1{width:220px;height:220px;background:var(--sun);top:-70px;left:-60px}
+.b2{width:140px;height:140px;background:var(--coral);right:6%;top:40%;animation-delay:-3s}
+.b3{width:90px;height:90px;background:#fff;left:12%;bottom:90px;animation-delay:-5s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.wave{position:absolute;left:0;right:0;bottom:-1px;height:70px}
+.topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.25rem}
+.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--sun),var(--coral));display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.pill{font-size:.78rem;font-weight:700;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:6px 12px;border-radius:99px;display:flex;align-items:center;gap:7px;backdrop-filter:blur(6px)}
+.live{width:8px;height:8px;border-radius:50%;background:#5dffa8;box-shadow:0 0 0 0 rgba(93,255,168,.7);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(93,255,168,0)}100%{box-shadow:0 0 0 0 rgba(93,255,168,0)}}
+
+.hello{position:relative;z-index:2;text-align:center;margin-top:34px}
+.greet{font-family:'Fredoka',sans-serif;font-size:clamp(1.1rem,3.2vw,1.5rem);font-weight:500;opacity:.95}
+.clock{display:flex;justify-content:center;align-items:flex-start;gap:clamp(6px,1.6vw,14px);margin:14px 0 6px}
+.seg{display:flex;flex-direction:column;align-items:center;gap:6px}
+.digits{font-family:'Fredoka',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;font-size:clamp(2.8rem,13vw,6.2rem);line-height:1;
+  padding:.12em .2em;min-width:1.55em;text-align:center;border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.28);
+  box-shadow:0 14px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.35);backdrop-filter:blur(8px);position:relative}
+.digits::after{content:"";position:absolute;left:8px;right:8px;top:50%;height:1px;background:rgba(0,0,0,.14)}
+.seg small{font-size:.68rem;letter-spacing:.18em;font-weight:700;opacity:.8}
+.colon{font-family:'Fredoka',sans-serif;font-size:clamp(2rem,9vw,4rem);font-weight:700;line-height:1;padding-top:.28em;color:var(--sun);animation:blink 1s steps(2,start) infinite}
+@keyframes blink{50%{opacity:.25}}
+.digits.tick{animation:tick .35s ease}
+@keyframes tick{0%{transform:translateY(-6px);opacity:.5}100%{transform:none;opacity:1}}
+.date{display:inline-flex;align-items:center;gap:10px;margin-top:14px;font-weight:700;font-size:clamp(.95rem,3.4vw,1.25rem);
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:9px 20px;border-radius:99px;backdrop-filter:blur(6px)}
+.tz{opacity:.7;font-weight:600;font-size:.8em}
+
+/* ---------- SEARCH ---------- */
+.search{position:relative;z-index:5;margin-top:-84px;background:var(--card);border-radius:28px;padding:26px clamp(18px,4vw,34px) 24px;
+  box-shadow:0 24px 60px -18px rgba(10,63,77,.35),0 2px 0 rgba(255,255,255,.6) inset;border:1px solid var(--line)}
+.search h1{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(1.3rem,4.2vw,1.8rem);color:var(--deep);line-height:1.2}
+.search p.sub{color:var(--muted);font-size:.95rem;margin-top:4px}
+.field{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.input{flex:1 1 260px;display:flex;align-items:center;gap:10px;background:#f2f8f7;border:2px solid transparent;border-radius:16px;padding:0 16px;transition:.2s}
+.input:focus-within{border-color:var(--teal);background:#fff;box-shadow:0 0 0 5px rgba(15,157,138,.14)}
+.input svg{flex:none;color:var(--teal)}
+.input input{flex:1;border:0;background:transparent;font:600 1.05rem 'Plus Jakarta Sans',sans-serif;color:var(--ink);padding:16px 0;outline:none;min-width:0}
+.input input::placeholder{color:#8fa8ae;font-weight:500}
+.btn{border:0;cursor:pointer;font:800 1rem 'Plus Jakarta Sans',sans-serif;color:#fff;padding:0 28px;min-height:56px;border-radius:16px;
+  background:linear-gradient(135deg,var(--teal),#0b8174);box-shadow:0 10px 22px -8px rgba(15,157,138,.7);transition:.2s;flex:1 1 140px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 26px -8px rgba(15,157,138,.8)}
+.btn:active{transform:none}
+.hint{font-size:.8rem;color:var(--muted);margin-top:12px;display:flex;gap:8px;align-items:center}
+
+/* ---------- RESULT ---------- */
+#hasil{margin:26px 0 10px;min-height:10px}
+.fade{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.state{text-align:center;padding:34px 20px;background:var(--card);border:1px dashed #c7dcdc;border-radius:var(--r);color:var(--muted)}
+.state .emo{font-size:2.6rem;margin-bottom:6px}
+.state b{display:block;color:var(--ink);font-size:1.1rem;margin-bottom:4px}
+.skel{height:260px;border-radius:var(--r);background:linear-gradient(100deg,#e9f3f1 30%,#f7fbfa 50%,#e9f3f1 70%);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+
+.choices h3{font-family:'Fredoka',sans-serif;color:var(--deep);font-size:1.15rem;margin-bottom:10px}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.chip{display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer;font:inherit;color:inherit;transition:.2s}
+.chip:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 10px 24px -14px rgba(10,63,77,.5)}
+.chip .av{width:42px;height:42px;font-size:1rem}
+.chip b{display:block;font-size:.95rem;line-height:1.25}
+.chip span{font-size:.78rem;color:var(--muted)}
+
+.card{background:var(--card);border-radius:28px;border:1px solid var(--line);overflow:hidden;box-shadow:0 24px 60px -30px rgba(10,63,77,.45)}
+.profile{display:flex;gap:22px;align-items:center;padding:26px clamp(18px,4vw,32px);position:relative;
+  background:linear-gradient(120deg,#e8f8f4,#fdf6e6)}
+.photo{position:relative;flex:none;width:128px;height:128px;border-radius:50%;padding:5px;background:conic-gradient(from 180deg,var(--teal),var(--sun),var(--coral),var(--teal));box-shadow:0 14px 30px -10px rgba(10,63,77,.5)}
+.photo img,.photo .av{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid #fff;background:#fff}
+.av{display:grid;place-items:center;color:#fff;font-family:'Fredoka',sans-serif;font-weight:700;font-size:2.6rem;border-radius:50%;flex:none}
+.pinfo{min-width:0;flex:1}
+.pinfo .tag{font-size:.72rem;font-weight:800;letter-spacing:.14em;color:var(--teal);text-transform:uppercase}
+.pinfo h2{font-family:'Fredoka',sans-serif;font-size:clamp(1.5rem,5vw,2.3rem);line-height:1.15;color:var(--deep);margin:2px 0 10px;word-break:break-word}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;padding:6px 12px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--ink)}
+.st{font-weight:800;border:0}
+.st.ok{background:var(--ok-bg);color:var(--ok)}
+.st.warn{background:var(--warn-bg);color:var(--warn)}
+.st.info{background:var(--info-bg);color:var(--info)}
+.st.none{background:#eef2f3;color:var(--muted)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px clamp(18px,4vw,32px) 6px}
+.stat{border-radius:20px;padding:16px 14px;position:relative;overflow:hidden;border:1px solid var(--line);background:#fbfefd}
+.stat .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;margin-bottom:10px;color:#fff}
+.stat:nth-child(1) .ic{background:linear-gradient(135deg,#ff9a76,#ff6b57)}
+.stat:nth-child(2) .ic{background:linear-gradient(135deg,#5ad1c0,#0f9d8a)}
+.stat:nth-child(3) .ic{background:linear-gradient(135deg,#ffd666,#f5a623)}
+.stat:nth-child(4) .ic{background:linear-gradient(135deg,#7fb4ff,#3b7ddd)}
+.stat .lb{font-size:.78rem;font-weight:700;color:var(--muted)}
+.stat .vl{font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(1.5rem,4.5vw,2rem);color:var(--deep);line-height:1.15;margin-top:2px}
+.stat .vl small{font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:700;color:var(--muted);margin-left:3px}
+
+.rows{padding:14px clamp(18px,4vw,32px) 24px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.row{display:flex;gap:12px;align-items:flex-start;background:#f6fbfa;border-radius:16px;padding:14px 16px}
+.row .ri{flex:none;width:36px;height:36px;border-radius:11px;background:var(--mint);color:var(--teal);display:grid;place-items:center}
+.row .rl{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.row .rv{font-weight:700;font-size:1.02rem;word-break:break-word}
+.row.wide{grid-column:1/-1}
+
+.hist{padding:0 clamp(18px,4vw,32px) 28px}
+.hist h3{font-family:'Fredoka',sans-serif;color:var(--deep);font-size:1.15rem;margin:6px 0 12px}
+.tl{list-style:none;position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--teal),var(--sun))}
+.tl li{position:relative;background:#f6fbfa;border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:.9rem}
+.tl li::before{content:"";position:absolute;left:-23px;top:16px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--teal)}
+.tl b{display:block}
+.tl span{color:var(--muted);font-size:.82rem}
+
+.empty-note{margin:6px clamp(18px,4vw,32px) 26px;padding:16px 18px;border-radius:16px;background:var(--info-bg);color:#14507f;font-weight:600;font-size:.95rem}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--teal);font:800 .9rem 'Plus Jakarta Sans',sans-serif;cursor:pointer;margin-bottom:12px}
+
+/* ---------- INFO ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:34px 0 10px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+.step .n{width:34px;height:34px;border-radius:50%;background:var(--sun);color:var(--deep);font-family:'Fredoka',sans-serif;font-weight:700;display:grid;place-items:center;margin-bottom:10px}
+.step b{display:block;margin-bottom:2px}
+.step p{font-size:.88rem;color:var(--muted)}
+.counter{display:flex;justify-content:center;gap:clamp(18px,6vw,56px);flex-wrap:wrap;margin:26px 0 8px;text-align:center}
+.counter b{display:block;font-family:'Fredoka',sans-serif;font-size:2.2rem;color:var(--teal);line-height:1}
+.counter span{font-size:.8rem;font-weight:700;color:var(--muted)}
+footer{margin-top:30px;padding:26px 0 34px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+footer b{color:var(--deep)}
+
+@media (max-width:760px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .rows{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .profile{flex-direction:column;text-align:center}
+  .meta{justify-content:center}
+  .photo{width:116px;height:116px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.4-9-9.2C1.6 8 4 4.5 7.5 4.5c2 0 3.5 1 4.5 2.5 1-1.5 2.5-2.5 4.5-2.5C20 4.5 22.4 8 21 11.8 19 16.6 12 21 12 21z"/></svg>
+        </div>
+        <span id="namaPosyandu">Posyandu Digital</span>
+      </div>
+      <div class="pill"><span class="live"></span> Data Real-Time</div>
+    </div>
+
+    <div class="hello">
+      <div class="greet" id="greet">Selamat datang 👋</div>
+      <div class="clock" role="timer" aria-label="Jam sekarang">
+        <div class="seg"><div class="digits" id="hh">--</div><small>JAM</small></div>
+        <div class="colon">:</div>
+        <div class="seg"><div class="digits" id="mm">--</div><small>MENIT</small></div>
+        <div class="colon">:</div>
+        <div class="seg"><div class="digits" id="ss">--</div><small>DETIK</small></div>
+      </div>
+      <div class="date">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></svg>
+        <span id="tgl">-</span><span class="tz">WIB</span>
+      </div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path fill="#f5fbf9" d="M0 40C240 80 480 0 720 28s480 52 720 0v42H0z"/></svg>
+</header>
+
+<main class="wrap">
+  <section class="search" aria-label="Pencarian data anak">
+    <h1>Cek data anak Anda 👶</h1>
+    <p class="sub">Ketik nama lengkap anak, data imunisasi dan tumbuh kembangnya langsung tampil.</p>
+    <form class="field" id="form" autocomplete="off">
+      <label class="input">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="text" placeholder="Contoh: Abasy Swandika" aria-label="Nama anak" enterkeyhint="search">
+      </label>
+      <button class="btn" type="submit">Cari Data</button>
+    </form>
+    <div class="hint">🔒 Hanya data anak yang namanya Anda ketik yang akan ditampilkan.</div>
+  </section>
+
+  <section id="hasil" aria-live="polite"></section>
+
+  <div class="counter" id="counter" hidden>
+    <div><b id="cAnak">0</b><span>Anak Terdata</span></div>
+    <div><b id="cDesa">0</b><span>Wilayah Posyandu</span></div>
+  </div>
+
+  <section class="steps" aria-label="Cara penggunaan">
+    <div class="step"><div class="n">1</div><b>Ketik nama anak</b><p>Tulis nama sesuai yang didaftarkan di posyandu.</p></div>
+    <div class="step"><div class="n">2</div><b>Data langsung muncul</b><p>Tersambung ke data kader secara real-time, tanpa menunggu.</p></div>
+    <div class="step"><div class="n">3</div><b>Pantau tumbuh kembang</b><p>Lihat berat, tinggi, imunisasi, dan catatan petugas.</p></div>
+  </section>
+
+  <footer>
+    <b id="namaFooter">Posyandu Digital</b> · Inovasi pelayanan posyandu berbasis web<br>
+    Informasi ini bukan pengganti konsultasi dengan kader atau petugas kesehatan.
+  </footer>
+</main>
+
+<script>
+/* =====================  PENGATURAN  ===================== */
+const CONFIG = {
+  NAMA_POSYANDU: 'Posyandu Digital',                 // ganti dengan nama posyandu/desa Anda
+  URL_API: '',                                       // tempel URL Web App Apps Script (berakhiran /exec)
+};
+/* Jika URL_API dikosongkan, website berjalan dalam MODE DEMO memakai data contoh di bawah. */
+const DEMO = [
+  {nama:'Abasy Swandika', desa:'Tangkil', foto:'', riwayat:[]},
+  {nama:'Zahra', desa:'Kedungupit', foto:'', riwayat:[{tanggal:'18 Okt 2026',jenis:'Campak',berat:'12.8',tinggi:'94',kepala:'51',lengan:'15',catatan:'Sehat'}]},
+  {nama:'Satria', desa:'Kedungupit', foto:'', riwayat:[
+    {tanggal:'10 Sep 2026',jenis:'DPT',berat:'13.1',tinggi:'95.2',kepala:'50.5',lengan:'16.5',catatan:'Perlu pantauan'},
+    {tanggal:'10 Okt 2026',jenis:'Polio',berat:'13.6',tinggi:'96.1',kepala:'51',lengan:'17',catatan:'Stunting'}]},
+  {nama:'Ahmad', desa:'Kedungupit', foto:'', riwayat:[{tanggal:'06 Okt 2026',jenis:'Campak',berat:'16.7',tinggi:'105.4',kepala:'51',lengan:'17',catatan:'Sehat'}]},
+  {nama:'Ahmad', desa:'Nglorog', foto:'', riwayat:[{tanggal:'06 Okt 2026',jenis:'Campak',berat:'16.7',tinggi:'105.4',kepala:'51',lengan:'17',catatan:'Sehat'}]},
+  {nama:'Rania', desa:'Sine', foto:'', riwayat:[{tanggal:'27 Okt 2026',jenis:'Polio',berat:'22',tinggi:'102.5',kepala:'51',lengan:'18',catatan:'Sehat'}]},
+];
+
+/* =====================  JAM & TANGGAL  ===================== */
+const $ = id => document.getElementById(id);
+const tzFmt = new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,
+  weekday:'long',day:'numeric',month:'long',year:'numeric'});
+let last = {};
+function setDigit(id,val){
+  const el=$(id);
+  if(last[id]!==val){ el.textContent=val; if(last[id]!==undefined){el.classList.remove('tick');void el.offsetWidth;el.classList.add('tick');} last[id]=val; }
+}
+function tick(){
+  const p={}; tzFmt.formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
+  const h=p.hour==='24'?'00':p.hour;
+  setDigit('hh',h); setDigit('mm',p.minute); setDigit('ss',p.second);
+  $('tgl').textContent=`${p.weekday}, ${p.day} ${p.month} ${p.year}`;
+  const n=+h, g = n<4?'Selamat malam':n<11?'Selamat pagi':n<15?'Selamat siang':n<18?'Selamat sore':'Selamat malam';
+  $('greet').textContent=`${g}, Ayah & Bunda 👋`;
+}
+tick(); setInterval(tick,1000);
+document.title = CONFIG.NAMA_POSYANDU+' – Cek Data Anak';
+$('namaPosyandu').textContent=CONFIG.NAMA_POSYANDU; $('namaFooter').textContent=CONFIG.NAMA_POSYANDU;
+
+/* =====================  UTIL  ===================== */
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const hues = [168,12,40,210,280,340,95];
+const hueOf = n => hues[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%hues.length];
+function avatar(n,cls=''){return `<div class="av ${cls}" style="background:linear-gradient(135deg,hsl(${hueOf(n)} 65% 55%),hsl(${(hueOf(n)+35)%360} 70% 45%))">${esc(initials(n))}</div>`}
+function fotoUrl(u){
+  u=(u||'').trim(); if(!u) return '';
+  const m=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||u.match(/[?&]id=([\w-]+)/);
+  if(/drive\.google\.com/.test(u)&&m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w600`;
+  return /^https?:\/\//.test(u)?u:'';
+}
+function status(c){
+  const t=(c||'').toLowerCase().trim();
+  if(!t) return {k:'none',t:'Belum ada catatan',i:'•'};
+  if(/stunting|buruk|kurang|rendah|obes|gemuk|lebih|sakit|demam|pantau/.test(t)) return {k:'warn',t:c,i:'⚠️'};
+  if(/sehat|normal|baik|bagus|ideal/.test(t)) return {k:'ok',t:c,i:'✅'};
+  return {k:'info',t:c,i:'ℹ️'};
+}
+const num = v => { const s=String(v??'').trim().replace(',','.'); return s!==''&&!isNaN(s)?{n:parseFloat(s),d:(s.split('.')[1]||'').length}:null };
+function countUp(el,to,d){
+  const t0=performance.now(),dur=900;
+  (function f(t){const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+    el.firstChild.textContent=(to*e).toFixed(d).replace('.',','); if(k<1) requestAnimationFrame(f)})(t0);
+}
+const ICON={
+ berat:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l2 13H3L5 7z"/><circle cx="12" cy="4.5" r="2"/><path d="M12 12v3"/></svg>',
+ tinggi:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg>',
+ kepala:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/></svg>',
+ lengan:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v6H3zM7 9v3M11 9v2M15 9v3M19 9v2"/></svg>',
+ shot:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4M17 7l3-3M9 15 3 21M14 6l4 4-8 8-4-4zM11 9l4 4"/></svg>',
+ cal:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></svg>',
+ note:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6"/></svg>',
+};
+
+/* =====================  DATA  ===================== */
+async function cari(q){
+  if(!CONFIG.URL_API){
+    await new Promise(r=>setTimeout(r,500));
+    const k=q.toLowerCase(); return DEMO.filter(d=>d.nama.toLowerCase().includes(k));
+  }
+  const res=await fetch(`${CONFIG.URL_API}?nama=${encodeURIComponent(q)}&_=${Date.now()}`);
+  const j=await res.json(); if(!j.ok) throw new Error(j.error||'gagal'); return j.hasil;
+}
+async function ringkas(){
+  try{
+    let j; if(!CONFIG.URL_API){ j={anak:DEMO.length,desa:new Set(DEMO.map(d=>d.desa)).size}; }
+    else { j=await (await fetch(`${CONFIG.URL_API}?aksi=ringkas`)).json(); }
+    $('counter').hidden=false;
+    const a=$('cAnak'),b=$('cDesa'); a.textContent='0'; b.textContent='0';
+    const run=(el,to)=>{const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1200);el.firstChild.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)};
+    run(a,j.anak); run(b,j.desa);
+  }catch(e){}
+}
+
+/* =====================  TAMPILAN HASIL  ===================== */
+const H=$('hasil'); let hasilList=[];
+function render(html){H.innerHTML=html}
+function skeleton(){render('<div class="skel"></div>')}
+function kosong(q){render(`<div class="state fade"><div class="emo">🔍</div><b>Nama “${esc(q)}” belum terdata</b>Periksa penulisan nama, atau hubungi kader posyandu agar anak Anda didaftarkan.</div>`)}
+function galat(){render(`<div class="state fade"><div class="emo">📡</div><b>Tidak dapat terhubung</b>Periksa koneksi internet Anda lalu coba lagi.</div>`)}
+
+function pilihan(list){
+  render(`<div class="choices fade"><h3>Ditemukan ${list.length} anak — pilih yang sesuai</h3><div class="chips">${
+    list.map((d,i)=>`<button class="chip" data-i="${i}">${avatar(d.nama)}<div><b>${esc(d.nama)}</b><span>📍 ${esc(d.desa)}</span></div></button>`).join('')}</div></div>`);
+  H.querySelectorAll('.chip').forEach(b=>b.onclick=()=>detail(list[+b.dataset.i],list.length>1));
+}
+
+function detail(d,bisaKembali){
+  const r=d.riwayat||[]; const t=r[r.length-1]||null;
+  const st=status(t&&t.catatan);
+  const foto=fotoUrl(d.foto);
+  const stats=[['berat','Berat Badan','kg'],['tinggi','Tinggi Badan','cm'],['kepala','Lingkar Kepala','cm'],['lengan','Lingkar Lengan','cm']];
+  const statHtml=t?`<div class="stats">${stats.map(([k,l,u])=>{
+      const v=num(t[k]); return `<div class="stat"><div class="ic">${ICON[k]}</div><div class="lb">${l}</div>
+      <div class="vl" ${v?`data-to="${v.n}" data-d="${v.d}"`:''}><span>${v?'0':'–'}</span><small>${v?u:''}</small></div></div>`}).join('')}</div>`:'';
+  const rows=t?`<div class="rows">
+      <div class="row"><div class="ri">${ICON.shot}</div><div><div class="rl">Jenis Imunisasi</div><div class="rv">${esc(t.jenis)||'–'}</div></div></div>
+      <div class="row"><div class="ri">${ICON.cal}</div><div><div class="rl">Tanggal Imunisasi</div><div class="rv">${esc(t.tanggal)||'–'}</div></div></div>
+      <div class="row wide"><div class="ri">${ICON.note}</div><div><div class="rl">Catatan Petugas</div><div class="rv">${esc(t.catatan)||'–'}</div></div></div></div>`
+    :`<div class="empty-note">Anak sudah terdaftar di posyandu ${esc(d.desa)}. Data pemeriksaan & imunisasi belum diisi oleh kader — silakan datang pada jadwal posyandu berikutnya. 💚</div>`;
+  const hist=r.length>1?`<div class="hist"><h3>Riwayat Pemeriksaan</h3><ul class="tl">${r.slice().reverse().map(x=>
+      `<li><b>${esc(x.jenis)||'Pemeriksaan'} · ${esc(x.tanggal)||'-'}</b><span>BB ${esc(x.berat)||'–'} kg · TB ${esc(x.tinggi)||'–'} cm · ${esc(x.catatan)||'–'}</span></li>`).join('')}</ul></div>`:'';
+  render(`${bisaKembali?'<button class="back" id="kembali">← Kembali ke daftar</button>':''}
+    <article class="card fade">
+      <div class="profile">
+        <div class="photo">${foto?`<img src="${esc(foto)}" alt="Foto ${esc(d.nama)}" referrerpolicy="no-referrer">`:avatar(d.nama)}</div>
+        <div class="pinfo"><div class="tag">Data Anak</div><h2>${esc(d.nama)}</h2>
+          <div class="meta"><span class="badge">📍 Posyandu ${esc(d.desa)}</span>
+          <span class="badge st ${st.k}">${st.i} ${esc(st.t)}</span></div></div>
+      </div>${statHtml}${rows}${hist}
+    </article>`);
+  const img=H.querySelector('.photo img'); if(img) img.onerror=()=>{img.parentNode.innerHTML=avatar(d.nama)};
+  H.querySelectorAll('.vl[data-to]').forEach(el=>countUp(el,+el.dataset.to,+el.dataset.d));
+  const kb=$('kembali'); if(kb) kb.onclick=()=>pilihan(hasilList);
+  if(H.getBoundingClientRect().top>innerHeight*0.55) H.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* =====================  INTERAKSI  ===================== */
+let timer,seq=0;
+async function jalankan(){
+  const q=$('q').value.trim(); const my=++seq;
+  if(q.length<3){ if(!q) render(''); else render('<div class="state fade"><div class="emo">✍️</div><b>Ketik minimal 3 huruf</b>Masukkan nama anak agar data dapat dicari.</div>'); return; }
+  skeleton();
+  try{
+    const list=await cari(q); if(my!==seq) return;
+    hasilList=list;
+    if(!list.length) return kosong(q);
+    const exact=list.filter(d=>d.nama.toLowerCase()===q.toLowerCase());
+    if(list.length===1) detail(list[0],false);
+    else if(exact.length===1) detail(exact[0],true);
+    else pilihan(list);
+  }catch(e){ if(my===seq) galat(); }
+}
+$('q').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(jalankan,600)});
+$('form').addEventListener('submit',e=>{e.preventDefault();clearTimeout(timer);jalankan()});
+ringkas();
+</script>
+</body>
+</html>
